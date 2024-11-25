@@ -32,10 +32,13 @@
 
 
                             <!-- Hidden Input -->
-                            <input id="profile" class="hidden" type="file" name="profile" accept="image/*" onchange="previewImage(event)">
+                            <input id="profile" class="hidden  " type="file" name="profile" accept="image/*" onchange="previewImage(event)">
 
                             <!-- Profile Icon and Text -->
                             <div class="flex items-center justify-center space-x-4 cursor-pointer">
+                                <div id="image-preview" class="mt-2 text-center">
+                                    <img id="preview" src="#" alt="Image Preview" class="rounded-full  bg-cover   " style="display: none; min-width: 90px; height: 90px;" />
+                                </div>
                                 <!-- Icon -->
                                 <label for="profile" class="w-24 h-24 flex items-center justify-center bg-purple-100 rounded-full">
                                     <i class="bi bi-person-circle text-6xl text-purple-600 hover:text-purple-700"></i>
@@ -52,9 +55,7 @@
                         </div>
 
                         <!-- Preview Image Section -->
-                        <div id="image-preview" class="mt-2 text-center">
-                            <img id="preview" src="#" alt="Image Preview" class="rounded-full" style="display: none; max-width: 150px; height: 150;" />
-                        </div>
+
 
                         <script>
                             function previewImage(event) {

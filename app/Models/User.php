@@ -27,6 +27,8 @@ class User extends Authenticatable
         'approved',
         'acode',
         'stats',
+        'plan',
+        'apply',
 
     ];
 
@@ -71,4 +73,9 @@ class User extends Authenticatable
         // Generate an avatar with the user's name
         return Avatar::create($this->name)->toBase64();
     }
+
+    public function classes() {
+        return $this->belongsToMany(Classes::class, 'class_student', 'student_id', 'class_id');
+    }
+
 }

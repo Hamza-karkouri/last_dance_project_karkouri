@@ -11,27 +11,26 @@ class activeMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check()) {
-            return redirect('/login');
-        }
 
         $user = Auth::user();
 
-        if (!$user) {
-            return redirect('/login');
-        }
 
-        if ($user->acode === null || $user->stats === 'notactive' || !$user->approved) {
-            return redirect('/notactive');
-        }
+if($user){
 
-        if ($user->stats === 'active') {
-            return $next($request);
-        }
-        if ($user->stats === 'owner') {
-            return $next($request);
-        }
-
-        return abort(403, 'Unauthorized action');
+    if ($user->acode === null || $user->stats === 'notactive' || !$user->approved) {
+        return redirect('/notactive');
     }
+
+    if ($user->stats === 'active') {
+        return $next($request);
+    }
+    if ($user->stats === 'owner') {
+        return $next($request);
+    }
+    return abort(403, 'Unauthorized action');
+}
+return $next($request);
+
+    }
+
 }

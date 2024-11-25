@@ -1,11 +1,11 @@
-<div class="w-80 h-screen p-6  py-14 pb-28  justify-center  flex-col flex shadow-2xl bg-white text-purple-800">
+<div class="w-[370px] h-screen p-6 py-14 pb-28 justify-center flex-col flex shadow-2xl bg-white text-purple-800 fixed top-0 left-0">
     <div class="mb-8">
-        <img src="{{ asset('storage/profile_pictures/main.png') }}" alt="Logo" class="w-40 h-w-40 ml-2">
+        <img src="{{ asset('storage/profile_pictures/main.png') }}" alt="Logo" class="w-48 h-w-48 ml-2">
     </div>
 
     <ul class="space-y-8">
         <li>
-            <a href="" class="flex items-center space-x-3 text-2xl font-bold hover:bg-purple-100 px-4 py-2 rounded-lg transition duration-300">
+            <a href="/home" class="flex items-center space-x-3 text-2xl font-bold hover:bg-purple-100 px-4 py-2 rounded-lg transition duration-300">
                 <i class="bi bi-house-door-fill"></i>
                 <span>Home</span>
             </a>
@@ -29,9 +29,16 @@
                     <a href="#" class="block text-lg font-medium hover:bg-purple-100 px-4 py-2">Show Classes</a>
                 </li>
                 <li>
-                    <a href="#" class="block text-lg font-medium hover:bg-purple-100 px-4 py-2">Create Class</a>
+                    <a href="classes" class="block text-lg font-medium hover:bg-purple-100 px-4 py-2">Create Class</a>
                 </li>
             </ul>
+        </li>
+
+        <li>
+            <a href="/coach-application" class="flex items-center space-x-3 text-2xl font-bold hover:bg-purple-100 px-4 py-2 rounded-lg transition duration-300">
+                <i class="bi bi-person-fill"></i>
+                <span>Coach Application</span>
+            </a>
         </li>
 
         @if(Auth::check() && Auth::user()->hasRole('admin'))
@@ -51,12 +58,26 @@
             </ul>
         </li>
         @endif
+
+        <li>
+            <a href="/payment" class="flex items-center space-x-3 text-2xl font-bold hover:bg-purple-100 px-4 py-2 rounded-lg transition duration-300">
+                <i class="bi bi-credit-card-fill"></i>
+                <span>Payment Plan</span>
+            </a>
+        </li>
+
+        <li>
+            <a href="/about" class="flex items-center space-x-3 text-2xl font-bold hover:bg-purple-100 px-4 py-2 rounded-lg transition duration-300">
+                <i class="bi bi-info-circle-fill"></i>
+                <span>About Us</span>
+            </a>
+        </li>
     </ul>
 
     <div class="mt-auto">
         <div x-data="{ open: false }" class="relative">
             <button @click="open = !open" class="flex items-center space-x-3 w-full px-4 py-2 rounded-lg hover:bg-purple-100 text-xl font-semibold">
-                <img src="{{ asset('storage/profile_pictures/' . auth()->user()->profile) }}" alt="Profile" class="w-10 h-10 rounded-full">
+                <img src="{{ asset('storage/profile_pictures/' . Auth::user()->profile) }}" alt="Profile" class="w-10 h-10 rounded-full">
                 <span>{{ Auth::user()->name }}</span>
                 <i :class="open ? 'bi bi-chevron-up' : 'bi bi-chevron-down'" class="ml-auto"></i>
             </button>

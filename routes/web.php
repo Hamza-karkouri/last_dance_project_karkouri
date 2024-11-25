@@ -1,13 +1,21 @@
 <?php
-
+use App\Http\Controllers\acceptcoachController;
+use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ActivateController;
+use App\Http\Controllers\CoachappController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Mail\ActivationCodeMail;
+
+use App\Http\Controllers\CourseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
 
 Route::get('/', function () {
+    if(!Auth::user()){
+        return view('welcome');
+    }
     if (Auth::user() && Auth::user()->stats == "active" && Auth::user()->stats == "owner") {
         return view('dashboard');
     } elseif (Auth::user() && Auth::user()->stats != "active" && Auth::user()->stats != "owner") {
@@ -18,6 +26,9 @@ Route::post("/active/store", [ActivateController::class, "store"])->name("active
 Route::get('/about', function () {
     return view('about');
 });
+Route::get('/home', function () {
+    return view('home');
+});
 Route::get('/requests', function () {
     if (Auth::user()->hasrole("admin")) {
         return view('admin.approve');
@@ -27,12 +38,36 @@ Route::get('/requests', function () {
 });
 
 
+
+
+
+
+
+Route::resource('classes', ClassController::class);
+Route::resource('coach-application', CoachappController::class);
+Route::resource('coach-application/store', CoachappController::class);
+Route::resource('coach-approve', acceptcoachController::class);
+Route::resource('coach-approve/store', acceptcoachController::class);
+
+
+
+
+Route::resource('classes/{class}/courses', CourseController::class);
+
+Route::get('/payment', [PaymentController::class, 'showPaymentPage'])->name('payment.page');
+Route::get('/payment/create/{plan}', [PaymentController::class, 'createPaymentSession'])->name('payment.create');
+Route::get('/payment/success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+Route::get('/payment/cancel', [PaymentController::class, 'paymentCancel'])->name('payment.cancel');
+
 Route::put("/requests/{user}", [ActivateController::class, "update"])->name("user.update");
 Route::get('/notactive', function () {
-    if (Auth::user()->stats != "active") {
-        return view('user.notactive');
+    if (  Auth::user() ) {
+        if(Auth::user()->stats != "active" && Auth::user()->stats != "owner"){
+            return view('user.notactive');
+        }
+
     } else {
-        return view('dashboard');
+        return view('welcome');
     }
 });
 Route::get('/dashboard', function () {

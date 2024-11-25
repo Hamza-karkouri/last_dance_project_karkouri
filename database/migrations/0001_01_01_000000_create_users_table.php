@@ -22,6 +22,8 @@ return new class extends Migration
             $table->boolean('approved')->default(false);
             $table->string('acode')->nullable();
             $table->string('stats')->default("notactive");
+            $table->enum('plan', ['free', 'premium', 'premium_plus'])->default('free');
+            $table->string('apply')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
