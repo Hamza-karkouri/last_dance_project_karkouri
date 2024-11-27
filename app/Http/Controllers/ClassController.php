@@ -29,6 +29,7 @@ class ClassController extends Controller
             'name' => 'required|string|max:255',
             'coach_id' => 'required|exists:users,id',
             'seats' => 'required|integer',
+
         ]);
 
         Classes::create($request->all());

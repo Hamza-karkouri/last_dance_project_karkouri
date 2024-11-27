@@ -15,11 +15,12 @@ return new class extends Migration
     {
         Schema::create('lessons', function (Blueprint $table) {
             $table->id(); // Auto-incrementing ID
-            $table->string('name'); // Name of the lesson (e.g., "Lesson 1: Introduction")
-            $table->text('content')->nullable(); // Content of the lesson (can be null if not set)
-            $table->foreignId('course_id')->constrained()->onDelete('cascade'); // Foreign key to the courses table
-            $table->integer('order')->default(0); // The order of the lesson within the course
-            $table->timestamps(); // created_at and updated_at timestamps
+            $table->string('name');
+            $table->text('content')->nullable();
+            $table->string('video')->nullable();
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
+            $table->integer('order')->default(0);
+            $table->timestamps();
         });
     }
 

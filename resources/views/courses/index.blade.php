@@ -2,7 +2,6 @@
 
 @section('content')
 <div class="min-h-screen flex flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-8 bg-gray-100">
-    <!-- Heading Section -->
     <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 border border-gray-200">
         <h1 class="text-3xl font-semibold text-purple-700 text-center mb-6">Courses for: {{ $class->name }}</h1>
         <div class="text-center mt-4">
@@ -12,32 +11,21 @@
         </div>
     </div>
 
-    <!-- Courses Table Section -->
-    <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 border border-gray-200 mt-6">
-        <table class="min-w-full table-auto">
-            <thead>
-                <tr class="border-b-2 border-gray-200">
-                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Course Name</th>
-                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($courses as $course)
-                    <tr class="border-b border-gray-200">
-                        <td class="px-6 py-4 text-sm text-gray-800">{{ $course->name }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-800">
-                            <button onclick="openModal({{ $course->id }})" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
-                                View
-                            </button>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+    <div class="w-full max-w-4xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+        @foreach ($courses as $course)
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden border border-gray-200">
+            <img src="{{ asset('storage/course_images/'. $course->image) }}" alt="{{ $course->name }}" class="w-full h-48 object-cover">
+            <div class="p-4">
+                <h2 class="text-lg font-semibold text-gray-800">{{ $course->name }}</h2>
+                <button onclick="openModal({{ $course->id }})" class="mt-4 w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
+                    View Details
+                </button>
+            </div>
+        </div>
+        @endforeach
     </div>
 </div>
 
-<!-- Modal for Course Details -->
 <div id="courseModal" class="fixed inset-0 z-50 hidden bg-gray-900 bg-opacity-50 flex items-center justify-center">
     <div class="bg-white w-full max-w-lg p-8 rounded-lg shadow-lg relative">
         <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none">
@@ -50,8 +38,10 @@
 
         <div id="modalContent" class="space-y-4"></div>
 
-        <div class="mt-6 text-center">
-            <a href="#" id="createLessonButton" class="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition duration-200">
+        <<div class="mt-6 text-center">
+            <a href="{{ route('lessons.create', ['course' => $course->id]) }}"
+               id="createLessonButton"
+               class="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition duration-200">
                 Create Lesson for this Course
             </a>
         </div>
@@ -59,30 +49,27 @@
 </div>
 
 <script>
-    function openModal(courseId) {
-        const modal = document.getElementById('courseModal');
-        const modalContent = document.getElementById('modalContent');
-        const modalTitle = document.getElementById('modalTitle');
-        const createLessonButton = document.getElementById('createLessonButton');
+function openModal(courseId) {
+    const modal = document.getElementById('courseModal');
+    const modalContent = document.getElementById('modalContent');
+    const modalTitle = document.getElementById('modalTitle');
+    const createLessonButton = document.getElementById('createLessonButton');
 
-        @foreach ($courses as $course)
-            if (courseId === {{ $course->id }}) {
-                modalTitle.innerHTML = '{{ $course->name }}';
-                modalContent.innerHTML = `
-                    <p><strong>Description:</strong> {{ $course->description }}</p>
-                    <p><strong>Created At:</strong> {{ $course->created_at->format('F j, Y') }}</p>
-                `;
+    @foreach ($courses as $course)
+        if (courseId === {{ $course->id }}) {
+            modalTitle.innerHTML = '{{ $course->name }}';
+            modalContent.innerHTML = `
+                <img src="{{ asset('storage/course_images/' . $course->image) }}" class="w-full h-48 object-cover rounded-lg">
+                <p><strong>Description:</strong> {{ $course->description }}</p>
+                <p><strong>Created At:</strong> {{ $course->created_at->format('F j, Y') }}</p>
+            `;
 
-                createLessonButton.href = '/courses/' + courseId + '/lessons';
-            }
-        @endforeach
+            createLessonButton.href = "{{ route('lessons.create', ':courseId') }}".replace(':courseId', courseId);
+        }
+    @endforeach
 
-        modal.classList.remove('hidden');
-    }
+    modal.classList.remove('hidden');
+}
 
-    function closeModal() {
-        const modal = document.getElementById('courseModal');
-        modal.classList.add('hidden');
-    }
 </script>
 @endsection

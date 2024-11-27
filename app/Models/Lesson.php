@@ -10,7 +10,7 @@ class Lesson extends Model
     use HasFactory;
 
     // Fields that can be mass-assigned
-    protected $fillable = ['name', 'course_id', 'content'];
+    protected $fillable = ['name', 'course_id',"video", 'content'];
 
     /**
      * A lesson belongs to a course.
@@ -20,5 +20,9 @@ class Lesson extends Model
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id');
+    }
+    public function userss()
+    {
+        return $this->hasmany(user::class, 'user_id');
     }
 }

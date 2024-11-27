@@ -42,9 +42,83 @@
         @endforeach
         </div>
 
-        <div class="flex justify-center flex-col w-full flex-1">
+        <div class="flex justify-center items-center flex-col w-full flex-1 h-screen">
             @yield('content')
+            @if (Route::is('dashboard'))
+
+            <div class="container">
+                <h1 class="text-center text-3xl font-semibold mb-6">All Classes</h1>
+
+                <div class="row">
+                    @foreach ($classes as $class)
+                    <div class="col-md-4 mb-4">
+                        <div class="card shadow-lg">
+
+                            <div class="card-body">
+                                <h5 class="card-title text-2xl text-center">{{ $class->name }}</h5>
+
+                                <h5 class="card-title text-xl text-center">{{ $class->coach->name }}</h5>
+                                <p class="card-text">{{ Str::limit($class->description, 100) }}</p>
+                                <h5 class="card-title text-purple-800 text-center">{{ $class->seats }}</h5>
+                                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#courseModal{{ $class->id }}">View Courses</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal for courses -->
+                    <div class="modal fade" id="courseModal{{ $class->id }}" tabindex="-1" aria-labelledby="courseModalLabel{{ $class->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+
+                                    <h5 class="modal-title" id="courseModalLabel{{ $class->id }}">{{ $class->name }} - Courses</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    @foreach ($class->courses as $course)
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <img src="{{ asset('storage/course_images/'. $course->image) }}" alt="{{ $course->name }}" class="w-full h-48 object-cover">
+                                            <h5 class="card-title">{{ $course->name }}</h5>
+                                            <p class="card-text">{{ Str::limit($course->description, 100) }}</p>
+
+                                            <!-- Dropdown for lessons ordered by time -->
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary dropdown-toggle" type="button" id="lessonDropdown{{ $course->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    View Lessons
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="lessonDropdown{{ $course->id }}">
+                                                    @foreach ($course->lessons->sortBy('created_at') as $lesson)
+                                                    <li>
+                                                        <a class="dropdown-item" href="">
+                                                            {{ $lesson->name }}
+                                                            <form action="" method="POST" class="d-inline">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-success btn-sm ml-2">Start Lesson</button>
+                                                            </form>
+                                                        </a>
+                                                    </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
+
+            @endif
         </div>
+
     </div>
 
 

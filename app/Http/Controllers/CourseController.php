@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Course;
@@ -26,10 +25,20 @@ class CourseController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         $class = Classes::findOrFail($classId);
-        $class->courses()->create($request->all());
+
+        $courseData = $request->only(['name', 'description']);
+
+        if ($request->hasFile('image')) {
+            $courseData['image'] = md5($request->file('image')->getClientOriginalName()) . '.' . $request->file('image')->getClientOriginalExtension();
+            $request->file('image')->storeAs('course_images', $courseData['image'], 'public');
+
+        }
+
+        $class->courses()->create($courseData);
 
         return redirect()->route('courses.index', $classId);
     }

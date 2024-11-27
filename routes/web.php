@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Mail\ActivationCodeMail;
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\LessonController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Mail;
@@ -79,5 +80,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::get('/courses/{course}/lessons/create', [LessonController::class, 'create'])->name('lessons.create');
+Route::post('/courses/{course}/lessons', [LessonController::class, 'store'])->name('lessons.store');
+Route::get('/{Course}/lessons', [LessonController::class, 'index'])->name('lessons.index');
+
+Route::get('/{Course}/lessons/{lesson}/edit', [LessonController::class, 'edit'])->name('lessons.edit');
+Route::put('/{Course}/lessons/{lesson}', [LessonController::class, 'update'])->name('lessons.update');
+Route::delete('/{Course}/lessons/{lesson}', [LessonController::class, 'destroy'])->name('lessons.destroy');
 
 require __DIR__ . '/auth.php';

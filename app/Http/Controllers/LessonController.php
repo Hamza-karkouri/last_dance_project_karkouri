@@ -8,68 +8,68 @@ use Illuminate\Http\Request;
 
 class LessonController extends Controller
 {
-    // Display a list of lessons for a specific course
-    public function index($courseId)
+    public function index(Course $course)
     {
-        $course = Course::findOrFail($courseId);
-        $lessons = $course->lessons; // Get lessons associated with the course
+        $lessons = $course->lessons;
 
         return view('lessons.index', compact('course', 'lessons'));
     }
 
-    // Show the form for creating a new lesson
-    public function create($courseId)
+    public function create(Course $course)
     {
-        $course = Course::findOrFail($courseId);
-
         return view('lessons.create', compact('course'));
     }
 
-    // Store a new lesson in the database
-    public function store(Request $request, $courseId)
+    public function store(Request $request, Course $course)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'content' => 'nullable|string',
             'order' => 'required|integer',
+            'video' => 'nullable|',
         ]);
 
-        $course = Course::findOrFail($courseId);
         $lesson = new Lesson($request->all());
+
+
+        if ($request->hasFile('video')) {
+            $video = $request->file('video');
+            $hashedName = hash('sha256', time() . $video->getClientOriginalName()) . '.' . $video->getClientOriginalExtension();
+            $videoPath = $video->storeAs('lessons/videos', $hashedName, 'public');
+            $lesson->video = $videoPath;
+        }
+
+        $lesson->course_id = $course->id;
+
         $course->lessons()->save($lesson);
 
-        return redirect()->route('lessons.index', $courseId)->with('success', 'Lesson created successfully!');
+        return redirect()->route('lessons.index', $course->id)->with('success', 'Lesson created successfully!');
     }
 
-    // Show the form for editing an existing lesson
-    public function edit($lessonId)
+
+    public function edit(Course $course, Lesson $lesson)
     {
-        $lesson = Lesson::findOrFail($lessonId);
-
-        return view('lessons.edit', compact('lesson'));
+        return view('lessons.edit', compact('course', 'lesson'));
     }
 
-    // Update the lesson in the database
-    public function update(Request $request, $lessonId)
+    public function update(Request $request, Course $course, Lesson $lesson)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'content' => 'nullable|string',
             'order' => 'required|integer',
+            'video' => 'nullable|mimes:mp4,mkv,avi|max:20480',  // Same here, make video nullable
         ]);
 
-        $lesson = Lesson::findOrFail($lessonId);
         $lesson->update($request->all());
 
-        return redirect()->route('lessons.index', $lesson->course_id)->with('success', 'Lesson updated successfully!');
+        return redirect()->route('lessons.index', $course->id)->with('success', 'Lesson updated successfully!');
     }
 
-    // Delete a lesson from the database
-    public function destroy($lessonId)
+    public function destroy(Course $course, Lesson $lesson)
     {
-        $lesson = Lesson::findOrFail($lessonId);
         $lesson->delete();
 
-        return redirect()->route('lessons.index', $lesson->course_id)->with('success', 'Lesson deleted successfully!');
+        return redirect()->route('lessons.index', $course->id)->with('success', 'Lesson deleted successfully!');
     }
 }

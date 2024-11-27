@@ -1,44 +1,38 @@
 @extends('dashboard')
 
 @section('content')
-<div class="min-h-screen flex flex-col items-center justify-center px-4 py-8 sm:px-6 lg:px-8 bg-gray-100">
-    <div class="mb-6 w-full max-w-4xl">
-        <h1 class="text-3xl font-semibold text-purple-700 text-center">Classes</h1>
-        <div class="text-center mt-4">
-            <a href="{{ route('classes.create') }}" class="bg-purple-600 text-white font-semibold py-2 px-6 rounded-lg hover:bg-purple-700 transition duration-200">
-                Create New Class
-            </a>
+<div class="min-h-screen flex items-center justify-center bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-7xl">
+        <div class="mb-6 text-center">
+            <h1 class="text-4xl font-semibold text-purple-700">Classes</h1>
+            <div class="text-center mt-4">
+                <a href="{{ route('classes.create') }}" class="bg-purple-600 text-white font-semibold py-3 px-8 rounded-lg hover:bg-purple-700 transition duration-200">
+                    Create New Class
+                </a>
+            </div>
         </div>
-    </div>
 
-    <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 border border-gray-200">
-        <table class="min-w-full table-auto">
-            <thead>
-                <tr class="border-b-2 border-gray-200">
-                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Name</th>
-                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Coach</th>
-                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Seats</th>
-                    <th class="px-6 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($classes as $class)
-                    <tr class="border-b border-gray-200">
-                        <td class="px-6 py-4 text-sm text-gray-800">{{ $class->name }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-800">{{ $class->coach->name }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-800">{{ $class->seats }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-800">
-                            <button onclick="openModal({{ $class->id }})" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
-                                View
-                            </button>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <!-- Card Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 justify-center mx-auto">
+            @foreach ($classes as $class)
+            <div class="bg-white rounded-lg shadow-xl overflow-hidden border border-gray-200 hover:shadow-2xl transition-shadow duration-300 transform hover:scale-105">
+                <div class="p-8">
+                    <h2 class="text-2xl font-semibold text-purple-700 mb-4">{{ $class->name }}</h2>
+                    <p class="text-lg text-gray-600 mb-4"><strong>Coach:</strong> {{ $class->coach->name }}</p>
+                    <p class="text-lg text-gray-600 mb-4"><strong>Seats:</strong> {{ $class->seats }}</p>
+                    <p class="text-lg text-gray-600 mb-4"><strong>Description:</strong> {{ Str::limit($class->description, 150) }}</p>
+
+                    <button onclick="openModal({{ $class->id }})" class="bg-purple-600 text-white py-3 px-6 rounded-lg hover:bg-purple-700 transition duration-200 text-lg">
+                        View
+                    </button>
+                </div>
+            </div>
+            @endforeach
+        </div>
     </div>
 </div>
 
+<!-- Modal -->
 <div id="classModal" class="fixed inset-0 z-50 hidden bg-gray-900 bg-opacity-50 flex items-center justify-center">
     <div class="bg-white w-full max-w-lg p-8 rounded-lg shadow-lg relative">
         <button onclick="closeModal()" class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none">
@@ -47,12 +41,12 @@
             </svg>
         </button>
 
-        <h2 class="text-2xl font-semibold text-purple-700 mb-6 text-center" id="modalTitle">Class Details</h2>
+        <h2 class="text-3xl font-semibold text-purple-700 mb-6 text-center" id="modalTitle">Class Details</h2>
 
         <div id="modalContent" class="space-y-4"></div>
 
         <div class="mt-6 text-center">
-            <a href="#" id="createCourseButton" class="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition duration-200">
+            <a href="#" id="createCourseButton" class="bg-green-600 text-white py-3 px-8 rounded-lg hover:bg-green-700 transition duration-200">
                 Create Course for this Class
             </a>
         </div>
